@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animatsiyali Tugmali Sayt</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: Arial, sans-serif;
+}
+
+body{
+  background: linear-gradient(120deg,#0f2027,#203a43,#2c5364);
+  min-height:100vh;
+  color:white;
+  overflow-x:hidden;
+}
+
+/* ===== KIRISH ===== */
+header{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+header h1{
+  font-size:3rem;
+  animation: drop 1s ease;
+}
+
+header p{
+  margin-top:10px;
+  opacity:0;
+  animation: fade 1.2s ease forwards;
+  animation-delay:0.6s;
+}
+
+@keyframes drop{
+  from{transform:translateY(-60px);opacity:0}
+  to{transform:translateY(0);opacity:1}
+}
+@keyframes fade{to{opacity:1}}
+
+/* ===== ASOSIY TUGMALAR ===== */
+.buttons{
+  margin-top:40px;
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+.btn{
+  padding:15px 30px;
+  border-radius:30px;
+  background:white;
+  color:#203a43;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.4s;
+  animation: pop 0.7s ease;
+}
+
+.btn:hover{
+  transform:scale(1.15);
+  background:#ffeb3b;
+  color:black;
+}
+
+@keyframes pop{
+  from{transform:scale(0);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+
+/* ===== BO‘LIMLAR ===== */
+section{
+  display:none;
+  padding:80px 12%;
+  animation: slide 0.7s ease;
+}
+
+section.active{display:block}
+
+@keyframes slide{
+  from{transform:translateY(40px);opacity:0}
+  to{transform:translateY(0);opacity:1}
+}
+
+/* ===== ICHKI TUGMALAR ===== */
+.card{
+  background:rgba(255,255,255,0.15);
+  padding:30px;
+  border-radius:15px;
+  margin-bottom:20px;
+}
+
+.link-btn{
+  display:inline-block;
+  margin-top:15px;
+  padding:12px 25px;
+  background:#ffeb3b;
+  color:black;
+  border-radius:25px;
+  text-decoration:none;
+  font-weight:bold;
+  transition:0.3s;
+}
+
+.link-btn:hover{
+  transform:scale(1.1);
+  background:white;
+}
+
+/* ===== FOOTER ===== */
+footer{
+  text-align:center;
+  padding:30px;
+  opacity:0.7;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Animatsiyali Web Sayt</h1>
+  <p>Mantiqli tugmalar • Real havolalar</p>
+
+  <div class="buttons">
+    <div class="btn" onclick="openSection('about')">ℹ️ Biz haqimizda</div>
+    <div class="btn" onclick="openSection('services')">⚙️ Xizmatlar</div>
+    <div class="btn" onclick="openSection('projects')">📁 Loyihalar</div>
+    <div class="btn" onclick="openSection('contact')">📞 Bog‘lanish</div>
+  </div>
+</header>
+
+<section id="about">
+  <div class="card">
+    <h2>Biz haqimizda</h2>
+    <p>Web texnologiyalar haqida bilim va amaliy loyihalar.</p>
+    <a class="link-btn" href="https://uz.wikipedia.org/wiki/HTML" target="_blank">
+      HTML haqida o‘qish
+    </a>
+  </div>
+</section>
+
+<section id="services">
+  <div class="card">
+    🌐 Web sayt yaratish <br>
+    <a class="link-btn" href="https://www.w3schools.com/html/" target="_blank">
+      O‘rganish
+    </a>
+  </div>
+
+  <div class="card">
+    🎨 Dizayn va animatsiya <br>
+    <a class="link-btn" href="https://www.w3schools.com/css/" target="_blank">
+      CSS Animatsiya
+    </a>
+  </div>
+
+  <div class="card">
+    ⚡ JavaScript imkoniyatlari <br>
+    <a class="link-btn" href="https://www.w3schools.com/js/" target="_blank">
+      JavaScript
+    </a>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="card">
+    🚀 Landing page namunalar <br>
+    <a class="link-btn" href="https://themeforest.net/" target="_blank">
+      Namunalarni ko‘rish
+    </a>
+  </div>
+
+  <div class="card">
+    🎮 HTML o‘yinlar <br>
+    <a class="link-btn" href="https://itch.io/games/html5" target="_blank">
+      O‘yinlar
+    </a>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="card">
+    📧 Email: 
+    <a class="link-btn" href="mailto:barno6582@gmail.com">
+      Yuborish
+    </a>
+    <br><br>
+
+    📱 Telefon:
+    <a class="link-btn" href="tel:+998941949516">
+      Qo‘ng‘iroq qilish
+    </a>
+    <br><br>
+
+    💬 Telegram:
+    <a class="link-btn" href="https://t.me/eltr_009" target="_blank">
+      Telegramga o‘tish
+    </a>
+  </div>
+</section>
+
+<footer>
+  © 2026 | Animatsiyali tugmali HTML sayt
+</footer>
+
+<script>
+function openSection(id){
+  document.querySelectorAll("section").forEach(sec=>{
+    sec.classList.remove("active");
+  });
+  document.getElementById(id).classList.add("active");
+  window.scrollTo({top: window.innerHeight, behavior:"smooth"});
+}
+</script>
+
+</body>
+</html>
