@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xrom App</title>
+
+<link rel="manifest" href="manifest.json">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}
+body{height:100vh;display:flex;justify-content:center;align-items:center;background:#0b0b0b;color:#fff;transition:0.3s;}
+.top-bar{position:absolute;top:15px;width:100%;display:flex;justify-content:space-between;padding:0 15px;}
+button{padding:8px 14px;border:none;border-radius:20px;background:#333;color:#fff;cursor:pointer;}
+.menu{position:absolute;top:60px;right:15px;background:#222;border-radius:12px;padding:10px;display:none;flex-direction:column;gap:8px;width:220px;}
+.menu button{width:100%;text-align:left;}
+.app{display:flex;flex-direction:column;align-items:center;gap:20px;}
+.logo{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,#00f5ff,#6a00ff,#ff0080,#ff8c00);display:flex;align-items:center;justify-content:center;font-size:40px;animation:float 3s infinite;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.search{width:90vw;max-width:500px;background:#1a1a1a;border-radius:50px;padding:15px;}
+.search input{width:100%;background:none;border:none;outline:none;color:#fff;font-size:18px;}
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:none;justify-content:center;align-items:center;}
+.modal-box{background:#222;padding:20px;border-radius:12px;max-width:300px;text-align:center;}
+#installBtn{display:none;width:100%;text-align:left;}
+</style>
+</head>
+
+<body>
+
+<div class="top-bar">
+  <button onclick="toggleMenu()">☰</button>
+  <button onclick="toggleMode()">☀</button>
+</div>
+
+<div class="menu" id="menu">
+  <button id="installBtn">📲 Install</button>
+  <button onclick="toggleMode()">🌙 Dark/Light</button>
+  <button onclick="showModal('about')">ℹ️ About</button>
+  <button onclick="showHistory()">🕘 History</button>
+  <button onclick="shareApp()">🔗 Share</button>
+  <button onclick="downloadApp()">⬇ Download</button>
+  <button onclick="closeMenu()">❌ Close</button>
+</div>
+
+<div class="app">
+  <div class="logo">X</div>
+  <h2 id="title">Xrom Searching</h2>
+  <div class="search">
+    <input id="input" placeholder="Qidirish...">
+  </div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-box" id="modalContent"></div>
+</div>
+
+<script>
+// === DARK MODE ===
+let dark = localStorage.getItem("dark")==="true";
+function applyTheme(){
+  if(dark){document.body.style.background="#0b0b0b";document.body.style.color="#fff";}
+  else{document.body.style.background="#f5f5f5";document.body.style.color="#000";}
+}
+applyTheme();
+function toggleMode(){dark=!dark;localStorage.setItem("dark",dark);applyTheme();}
+
+// === MENU ===
+function toggleMenu(){const m=document.getElementById("menu");m.style.display==="flex"?m.style.display="none":m.style.display="flex";}
+function closeMenu(){document.getElementById("menu").style.display="none";}
+
+// === SEARCH & HISTORY ===
+let historyArr = JSON.parse(localStorage.getItem("history")||"[]");
+function saveHistory(q){historyArr.unshift(q);historyArr=historyArr.slice(0,10);localStorage.setItem("history",JSON.stringify(historyArr));}
+function search(q){if(!q)return;saveHistory(q);if(/^(https?:\/\/)?([\w-]+\.)+[\w-]+/.test(q)){if(!q.startsWith("http"))q="https://"+q;window.open(q,"_blank");}else{window.open("https://google.com/search?q="+encodeURIComponent(q));}}
+document.getElementById("input").addEventListener("keydown",e=>{if(e.key==="Enter")search(e.target.value);});
+function showHistory(){showModal("history");}
+
+// === SHARE ===
+function shareApp(){if(navigator.share){navigator.share({title:"Xrom App",text:"Zo‘r qidiruv ilovasi 🔥",url:location.href});}else{navigator.clipboard.writeText(location.href);alert("Link nusxalandi!");}}
+
+// === DOWNLOAD ===
+function downloadApp(){
+  const blob=new Blob([document.documentElement.outerHTML],{type:"text/html"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="xrom-app.html";
+  a.click();
+}
+
+// === INSTALL ===
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e)=>{
+  e.preventDefault();
+  deferredPrompt=e;
+  document.getElementById('installBtn').style.display='block';
+});
+document.getElementById('installBtn').addEventListener('click',async()=>{
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    const choice=await deferredPrompt.userChoice;
+    deferredPrompt=null;
+  } else alert("Sizning brauzeringiz Add to Home Screen qo‘llab-quvvatlamaydi");
+});
+
+// === MODAL ===
+function showModal(type){
+  const modal=document.getElementById("modal");
+  const content=document.getElementById("modalContent");
+  if(type==="about") content.innerHTML="Xrom App<br>Tez qidiruv ilovasi 🚀<br>Version 2.0";
+  if(type==="history") content.innerHTML="History:<br><br>"+(historyArr.join("<br>")||"Bo'sh");
+  modal.style.display="flex";
+}
+document.getElementById("modal").onclick=()=>{document.getElementById("modal").style.display="none";}
+
+// === SERVICE WORKER ===
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').then(()=>console.log('SW registered')).catch(err=>console.log(err));
+}
+</script>
+
+</body>
+</html>
